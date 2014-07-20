@@ -1,0 +1,13 @@
+*.class
+*.cache
+
+# Package Files #
+*.war
+*.ear
+*.jar
+
+# Eclipse #
+.classpath
+.project
+target
+/Web/bin
