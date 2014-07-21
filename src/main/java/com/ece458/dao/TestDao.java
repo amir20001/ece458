@@ -1,15 +1,13 @@
 package com.ece458.dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+
+import com.ece458.domain.Data;
+import com.ece458.mapper.DataMapper;
 
 @Repository
 public class TestDao {
@@ -24,36 +22,17 @@ public class TestDao {
 		this.dataSource = dataSource;
 	}
 
-	public void test() {
-		String sql = "select * from data";
+	public Data getip(String domainName) {
+		String sql = "select * from data where domain_name= ?";
 
-		Connection conn = null;
+		Data data = null;
 		try {
-			conn = dataSource.getConnection();
-			PreparedStatement ps = conn.prepareStatement(sql);
-
-			ResultSet rs = ps.executeQuery();
-
-			while (rs.next()) {
-				try {
-					System.out.println(rs.getInt(1) + " " + rs.getString(2) + " " + rs.getString(3));
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-			rs.close();
-			ps.close();
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-				}
-			}
+			data = jdbcTemplate.queryForObject(sql, new Object[] { domainName },
+					new DataMapper());
+		} catch (Exception e) {
+			// No user was found with the specified id, return null
+			return null;
 		}
-
+		return data;
 	}
-
 }
