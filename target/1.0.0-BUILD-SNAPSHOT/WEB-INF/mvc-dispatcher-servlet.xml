@@ -42,9 +42,9 @@
 		<!-- Amazon Web Services -->
 		<!-- Production -->
 		<property name="url"
-			value="jdbc:mysql://ec2-50-19-213-178.compute-1.amazonaws.com:3306/instadj"></property>
-		<property name="username" value="instadj"></property>
-		<property name="password" value="root123"></property>
+			value="jdbc:mysql://localhost:3306/ece458"></property>
+		<property name="username" value="root"></property>
+		<property name="password" value="root"></property>
 	</bean>
 
 </beans>
