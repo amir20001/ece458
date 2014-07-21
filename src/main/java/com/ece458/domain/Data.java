@@ -29,4 +29,10 @@ public class Data extends BaseEntity {
 		this.signature = signature;
 	}
 
+	@Override
+	public String toString() {
+		return "ip: " + ip + ", domainName: " + domainName + ", signature:"
+				+ signature;
+	}
+
 }

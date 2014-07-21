@@ -1,5 +1,8 @@
 package com.ece458.dao;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,12 +30,25 @@ public class TestDao {
 
 		Data data = null;
 		try {
-			data = jdbcTemplate.queryForObject(sql, new Object[] { domainName },
-					new DataMapper());
+			data = jdbcTemplate.queryForObject(sql,
+					new Object[] { domainName }, new DataMapper());
 		} catch (Exception e) {
 			// No user was found with the specified id, return null
 			return null;
 		}
 		return data;
 	}
+
+	public List<Data> getAll() {
+		String sql = "select * from data;";
+
+		List<Data> rooms = new ArrayList<Data>();
+		try {
+			rooms = jdbcTemplate.query(sql, new DataMapper());
+			return rooms;
+		} catch (Exception e) {
+			return rooms;
+		}
+	}
+
 }
