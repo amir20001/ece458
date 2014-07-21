@@ -31,10 +31,10 @@
 						<dl class="dl-horizontal">
 							<dt>IP</dt>
 							<dd>${data.ip}</dd>
-							
+
 							<dt>Domain Name</dt>
 							<dd>${data.domainName}</dd>
-							
+
 							<dt>Signature</dt>
 							<dd>${data.signature}</dd>
 						</dl>
