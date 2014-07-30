@@ -5,6 +5,17 @@ public class Data extends BaseEntity {
 	private String domainName;
 	private String signature;
 
+	public Data(){
+		
+	}
+	
+	public Data(String ip, String domainName,String signature){
+		this.ip=ip;
+		this.domainName=domainName;
+		this.signature=signature;
+	}
+	
+	
 	public String getIp() {
 		return ip;
 	}
