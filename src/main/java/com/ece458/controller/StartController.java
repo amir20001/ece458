@@ -28,8 +28,6 @@ import com.ece458.domain.Data;
 @RequestMapping("/")
 public class StartController {
 
-	private BigInteger key = null;
-	SecretKeySpec secretKeySpec;
 	final Provider bc = new BouncyCastleProvider();
 	@Autowired
 	TestDao testDao;
@@ -48,9 +46,13 @@ public class StartController {
 		boolean hasSign = false;
 		Data data = testDao.getip(domainName);
 		System.out.println(data);
-		if (key != null && data != null) {
+		BigInteger key = (BigInteger) session.getAttribute("key");
+		SecretKeySpec secretKeySpec = (SecretKeySpec) session
+				.getAttribute("secretKeySpec");
 
-			byte[] calculateMac = calculateMac(data);
+		if (key != null && secretKeySpec != null && data != null) {
+
+			byte[] calculateMac = calculateMac(data, secretKeySpec);
 			data.setSignature(Arrays.toString(calculateMac));
 			hasSign = true;
 		}
@@ -76,9 +78,11 @@ public class StartController {
 		BigInteger clientKey = client.calculateKey(ka);
 
 		if (serverKey.equals(clientKey)) {
-			key = serverKey;
-			secretKeySpec = new SecretKeySpec(key.toString().getBytes(),
-					"HMac-SHA1");
+			BigInteger key = serverKey;
+			SecretKeySpec secretKeySpec = new SecretKeySpec(key.toString()
+					.getBytes(), "HMac-SHA1");
+			session.setAttribute("key", key);
+			session.setAttribute("secretKeySpec", secretKeySpec);
 
 		}
 
@@ -87,7 +91,7 @@ public class StartController {
 
 	@RequestMapping(method = RequestMethod.POST, value = "/rmkey")
 	public ModelAndView clearKey(HttpSession session, Model model) {
-		key = null;
+		session.invalidate();
 		return new ModelAndView("lookup");
 	}
 
@@ -97,10 +101,13 @@ public class StartController {
 			@RequestParam("ip") String ip,
 			@RequestParam("signature") String signature)
 			throws InvalidKeyException, NoSuchAlgorithmException {
+		BigInteger key = (BigInteger) session.getAttribute("key");
+		SecretKeySpec secretKeySpec = (SecretKeySpec) session
+				.getAttribute("secretKeySpec");
 
-		if (key != null) {
+		if (key != null && domainName != null && ip != null) {
 			Data data = new Data(ip, domainName, signature);
-			byte[] calculateMac = calculateMac(data);
+			byte[] calculateMac = calculateMac(data, secretKeySpec);
 			byte[] fromString = fromString(signature);
 			System.out.println(Arrays.equals(calculateMac, fromString));
 			model.addAttribute("sent", Arrays.toString(fromString));
@@ -111,8 +118,8 @@ public class StartController {
 		return new ModelAndView("lookup");
 	}
 
-	public byte[] calculateMac(Data data) throws NoSuchAlgorithmException,
-			InvalidKeyException {
+	public byte[] calculateMac(Data data, SecretKeySpec secretKeySpec)
+			throws NoSuchAlgorithmException, InvalidKeyException {
 		Mac mac = Mac.getInstance("HMac-SHA1", bc);
 		mac.init(secretKeySpec);
 		mac.reset();

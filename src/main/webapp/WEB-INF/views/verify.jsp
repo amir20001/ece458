@@ -27,6 +27,12 @@
 
 						<dt>Equal</dt>
 						<dd>${equal}</dd>
+
+						<dt>
+							<form method="get" action="<%=request.getContextPath()%>/lookup">
+								<button type="submit" class="btn btn-primary">Back</button>
+							</form>
+						</dt>
 					</dl>
 				</div>
 			</div>
